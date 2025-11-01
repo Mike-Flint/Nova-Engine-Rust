@@ -1,0 +1,24 @@
+[package]
+name = "Nova-Engine"
+version = "0.28.0"
+authors = ["Mike-Flint <okkohakola@gmail.com>"]
+edition = "2024"
+description = "My engine, for creating games"
+# homepage = "https://github.com/hakolao/egui_winit_vulkano"
+license = "Apache-2.0"
+readme = "README.md"
+# repository = "https://github.com/hakolao/egui_winit_vulkano"
+
+
+[dependencies]
+# winit = { version = "0.30", default-features = false, features = ["rwh_06"] }
+egui-winit = { version = "0.31.1", default-features = false }
+egui_winit_vulkano = "0.28.0"
+egui_dock = "0.16.0"
+egui_tiles = "0.12.0"
+vulkano = { version = "0.35" }
+vulkano-shaders = "0.35"
+vulkano-util = { version = "0.35" }
+
+image = { version = "0.25", optional = true }
+cgmath = "0.18.0"
