@@ -27,22 +27,22 @@ use vulkano::{
     sync::GpuFuture,
 };
 
-use crate::graphics::renderer::Allocators;
+use crate::graphics::pipeline::NAllocators;
 
 /// Система для рендеринга одного кадра
-pub struct FrameSystem {
+pub struct NFrameSystem {
     gfx_queue: Arc<Queue>,          // Очередь графических команд
     render_pass: Arc<RenderPass>,   // Проход рендеринга
     depth_buffer: Arc<ImageView>,   // Буфер глубины
-    allocators: Allocators,         // Аллокаторы памяти и команд
+    allocators: NAllocators,         // Аллокаторы памяти и команд
 }
 
-impl FrameSystem {
+impl NFrameSystem {
     pub fn new(
         gfx_queue: Arc<Queue>,
         final_output_format: Format,
-        allocators: Allocators,
-    ) -> FrameSystem {
+        allocators: NAllocators,
+    ) -> NFrameSystem {
         let render_pass = vulkano::ordered_passes_renderpass!(gfx_queue.device().clone(),
             attachments: {
                 final_color: {
@@ -82,7 +82,7 @@ impl FrameSystem {
         )
         .unwrap();
         let depth_buffer = ImageView::new_default(depth_buffer.clone()).unwrap();
-        FrameSystem { gfx_queue, render_pass, depth_buffer, allocators }
+        NFrameSystem { gfx_queue, render_pass, depth_buffer, allocators }
     }
 
     #[inline]
@@ -166,7 +166,7 @@ impl FrameSystem {
 // - DrawPass::execute отримує SecondaryAutoCommandBuffer і вставляє його в primary builder.
 // - Коли всі паси завершені, primary command buffer будується та виконуються залежності (before_future -> primary CB).
 pub struct Frame<'a> {
-    system: &'a mut FrameSystem,    // Ссылка на систему кадров
+    system: &'a mut NFrameSystem,    // Ссылка на систему кадров
     num_pass: u8,                   // Номер текущего прохода
     before_main_cb_future: Option<Box<dyn GpuFuture>>,  // Future для синхронизации
     framebuffer: Arc<Framebuffer>,  // Фреймбуфер для рендеринга

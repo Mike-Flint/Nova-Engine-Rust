@@ -26,10 +26,10 @@ use vulkano::{
     render_pass::Subpass,
 };
 
-use crate::graphics::renderer::Allocators;
+use crate::graphics::pipeline::NAllocators;
 
 // Система отрисовки треугольников
-pub struct TriangleDrawSystem {
+pub struct NTriangleDrawSystem {
     gfx_queue: Arc<Queue>,          // Очередь графических команд
     vertex_buffer: Subbuffer<[MyVertex]>,  // Буфер вершин треугольника
     pipeline: Arc<GraphicsPipeline>,  // Графический пайплайн
@@ -37,15 +37,15 @@ pub struct TriangleDrawSystem {
     command_buffer_allocator: Arc<StandardCommandBufferAllocator>, // Аллокатор команд
 }
 
-impl TriangleDrawSystem {
+impl NTriangleDrawSystem {
     // TriangleDrawSystem: будує вершинний буфер з трьома вершинами та GraphicsPipeline,
     // який використовує вбудовані шейдери (vulkan GLSL через vulkano_shaders).
     // В draw() генерується SecondaryAutoCommandBuffer що малює ці вершини.
     pub fn new(
         gfx_queue: Arc<Queue>,
         subpass: Subpass,
-        allocators: &Allocators,
-    ) -> TriangleDrawSystem {
+        allocators: &NAllocators,
+    ) -> NTriangleDrawSystem {
         let vertex_buffer = Buffer::from_iter(
             allocators.memory.clone(),
             BufferCreateInfo { usage: BufferUsage::VERTEX_BUFFER, ..Default::default() },
@@ -104,7 +104,7 @@ impl TriangleDrawSystem {
             .unwrap()
         };
 
-        TriangleDrawSystem {
+        NTriangleDrawSystem {
             gfx_queue,
             vertex_buffer,
             pipeline,

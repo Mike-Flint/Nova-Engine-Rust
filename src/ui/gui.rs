@@ -15,49 +15,54 @@ use vulkano::{
 
 use crate::ui::tiles::PaneTrait;
 use crate::ui::tiles::{TileUI, show_tiles_ui};
-use crate::ui::tiles::Pane;
+use egui_winit::winit::event_loop::ActiveEventLoop;
+use egui_winit_vulkano::{GuiConfig};
+use crate::core::App;
 
 
 // Структура GuiState управляет состоянием пользовательского интерфейса
-pub struct GuiState {
-    // Флаги видимости окон
-    show_texture_window1: bool,     // Показывать ли окно с текстурой дерева
-    show_texture_window2: bool,     // Показывать ли окно с текстурой собаки
-    show_scene_window: bool,        // Показывать ли окно со сценой
+pub struct GuiSystem {
+    pub tile_ui: TileUI,
+    pub gui: Gui
 }
 
-pub struct Guilayout {
-    tile_ui: TileUI
-}
-
-impl Guilayout {
+impl GuiSystem {
     // Створює GUI-ідентифікатори для зображень та налаштовує тайлову систему
-    pub fn new(gui: &mut Gui, scene_image: Arc<ImageView>, scene_view_size: [u32; 2]) -> Guilayout {
-        // Реєструємо текстури
-        let image_texture_id1 = gui.register_user_image(
-            include_bytes!("../assets/tree.png"),
-            Format::R8G8B8A8_SRGB,
-            Default::default(),
-        );
-        let image_texture_id2 = gui.register_user_image(
-            include_bytes!("../assets/doge2.png"),
-            Format::R8G8B8A8_SRGB,
-            Default::default(),
-        );
+    pub fn new( event_loop:& ActiveEventLoop , app: &mut App) -> GuiSystem {
 
-        let mut tile_ui = TileUI::new();
-        // Register textures
-        let scene_texture_id = gui.register_user_image_view(scene_image, Default::default());
+        let gui = {
+            let renderer = app.windows.get_primary_renderer_mut().unwrap();
+            Gui::new(
+                event_loop,
+                renderer.surface(),
+                renderer.graphics_queue(),
+                renderer.swapchain_format(),
+                GuiConfig::default(),
+            )
+        };
 
-        // tile_ui.add_image_tile("Tree".to_owned(), image_texture_id1, [256.0, 256.0]);
+        let tile_ui = TileUI::new();
 
-
-        Guilayout {
-            tile_ui
+        GuiSystem {
+            tile_ui,
+            gui
         }
     }
 
-    pub fn layout(&mut self, egui_context: Context, window_size: [f32; 2], fps: f32) {
+
+    pub fn draw(&mut self) {
+
+        let egui_context = {
+            let gui = &mut self.gui;
+            let mut ctx_opt = None;
+
+            gui.immediate_ui(|gui| {
+                ctx_opt = Some(gui.context().clone());
+            });
+
+            ctx_opt.unwrap()
+        };
+
         egui_context.set_visuals(Visuals::dark());
 
         let mut pane_states: Vec<(String, bool)> = Vec::new();

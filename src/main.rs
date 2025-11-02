@@ -3,8 +3,8 @@
 #![allow(clippy::eq_op)]
 
 
-mod ui;
-mod scene;
+pub mod ui;
+pub mod scene;
 mod graphics;
 mod core;
 
@@ -18,7 +18,6 @@ use crate::core::App;
 
 pub fn main() -> Result<(), winit::error::EventLoopError> {
     let event_loop = EventLoop::new().unwrap();
-
     let mut app = App::default();
 
     // Event loop run

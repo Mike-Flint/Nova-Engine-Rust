@@ -1,29 +1,58 @@
 {
-	// Используйте IntelliSense, чтобы узнать о возможных атрибутах.
-	// Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
-	// Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Debug executable 'Nova-Engine'",
+			"type": "lldb",
+			"request": "launch",
+			"cargo": {
+				"args": [
+					"run",
+					"--bin=Nova-Engine"
+				]
+			},
+			"args": []
+		},
+		
+		{
+			"type": "codelldb",
+			"request": "launch",
+			"name": "Launch Program (CodeLLDB)",
+			"program": "${input:programPath}",
+			"args": [],
+			"cwd": "${workspaceFolder}",
+			"preLaunchTask": "cargo build",
+			"stopAtEntry": false,
+			"console": "integratedTerminal"
+		},
+		{
 			"type": "cppvsdbg",
 			"request": "launch",
-			"name": "Launch Program",
-			"program": "${workspaceFolder}/target/debug/start.exe",
-			"stopAtEntry": true,
+			"name": "Launch Program (Windows - cppvsdbg)",
+			"program": "${input:programPath}",
+			"args": [],
 			"cwd": "${workspaceFolder}",
-			"environment": [
-				{
-					"name": "config",
-					"value": "Debug"
-				}
-			]
+			"preLaunchTask": "cargo build",
+			"stopAtEntry": false,
+			"console": "integratedTerminal"
+		},
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Launch Program (LLDB)",
+			"program": "${input:programPath}",
+			"args": [],
+			"cwd": "${workspaceFolder}",
+			"preLaunchTask": "cargo build",
+			"stopAtEntry": false,
+			"console": "integratedTerminal"
 		}
 	],
 	"inputs": [
 		{
+			"id": "programPath",
 			"type": "promptString",
-			"id": "executableName",
-			"description": "Name of your executable"
+			"description": "Enter the path to the built executable (e.g. ${workspaceFolder}/target/debug/Nova-Engine or ${workspaceFolder}/target/debug/Nova-Engine.exe)"
 		}
 	]
 }
